@@ -48,7 +48,7 @@ jobs:
       
       - name: Docker build
         id: build-image
-        run: docker build -t ${{ env.LOCAL_IMAGE_NAME }} --file .\Code\ClientAPI\Dockerfile.ci .
+        run: docker build -t ${{ env.LOCAL_IMAGE_NAME }} --file ./Code/ClientAPI/Dockerfile.ci .
       
       #- name: Configure AWS credentials
       #  uses: aws-actions/configure-aws-credentials@v1

@@ -8,6 +8,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      LOCAL_IMAGE_NAME: new_docker_image:temp # full name of the local docker image (name + tag)
+
     steps:
       - name: log inputs
         run: |

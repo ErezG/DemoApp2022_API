@@ -8,7 +8,7 @@ RUN apk add --no-cache libstdc++ icu
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["ClientAPI/ClientAPI.csproj", "ClientAPI/"]
-RUN dotnet restore "ClientAPI/ClientAPI.csproj"
+RUN dotnet restore "ClientAPI/ClientAPI.csproj" -r alpine-x64
 COPY . .
 WORKDIR "/src/ClientAPI"
 RUN dotnet build "ClientAPI.csproj" -c Release -r alpine-x64 --self-contained false -o /app/build

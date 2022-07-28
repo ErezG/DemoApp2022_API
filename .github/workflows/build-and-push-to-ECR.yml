@@ -2,11 +2,18 @@ name: build & push to ECR
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'v[0-9]+*'
+  pull_request:
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    env:
+      LOCAL_IMAGE_NAME: new_docker_image:temp
 
     steps:
       - name: log inputs
@@ -18,52 +25,46 @@ jobs:
           echo git commit hash: $GITHUB_SHA
     
       - uses: actions/checkout@v3
-
-      # check if docker image exists for the commit. according - either (build & push) or (retag existing image)
-      
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 6.0.x
           
       - name: Get app version
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
+          git fetch --depth=1 origin
           tags=($(git tag --list 'v[0-9.]*' --points-at))
+          echo tags: ${tags[@]}
           tags_desc=($(printf '%s\n' ${tags[@]} | awk '{ print length($0) " " $0; }' | sort -n -r | cut -d ' ' -f 2-))
+          echo tags_desc: ${tags_desc[@]}
           app_version=${tags_desc[0]}  
           echo "app_version=$app_version" >> $GITHUB_ENV
           echo app_version: $app_version
       
-      - name: Restore dependencies
-        run: dotnet restore 'Code\ClientAPI\ClientAPI.csproj' --runtime alpine-x64
-        
-      - name: Build
-        run: dotnet build --no-restore 'Code\ClientAPI\ClientAPI.csproj' --configuration Release --runtime alpine-x64
-      
-      - name: dotnet Publish
-        run: dotnet publish --no-build 'Code\ClientAPI\ClientAPI.csproj' --configuration Release -o ../publish_artifacts/ --self-contained --runtime alpine-x64
-      
       - name: Docker build
         id: build-image
-        run: docker build -t ${{ env.LOCAL_IMAGE_NAME }} --file .\Code\ClientAPI\Dockerfile.ci .
+        run: docker build -t ${{ env.LOCAL_IMAGE_NAME }} --file ./ClientAPI/Dockerfile.ci .
+        working-directory: ./Code
       
-      #- name: Configure AWS credentials
-      #  uses: aws-actions/configure-aws-credentials@v1
-      #  with:
-      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #    aws-region: us-east-1
-      #
-      #- name: Login to Amazon ECR
-      #  id: login-ecr
-      #  uses: aws-actions/amazon-ecr-login@v1
-      #
-      #- name: push to ECR
-      #  uses: ErezG/push-to-ECR@v1
-      #  with:
-      #    env-key: ${{ env.FULL_ENV_KEY }}
-      #    local-image: ${{ env.LOCAL_IMAGE_NAME }}
-      #    app-version: ${{ env.app_version }}
+      - name: Configure AWS credentials
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Login to Amazon ECR
+        if: ${{ github.event_name != 'pull_request' }}
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      
+      - name: push to ECR
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: ErezG/push-to-ECR@v1
+        with:
+          env-key: client-api-dev
+          local-image: ${{ env.LOCAL_IMAGE_NAME }}
+          app-version: ${{ env.app_version }}
+          extra-tags: 'commit-hash=${{ github.sha }}'
       
       #- name: deploy
+      #  if: ${{ github.event_name != 'pull_request' }}
       #  run: echo deploy...

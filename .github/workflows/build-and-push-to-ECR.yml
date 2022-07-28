@@ -24,25 +24,11 @@ jobs:
           
       - name: Get app version
         run: |
-          git --version
           git fetch --depth=1 origin
-          echo -------------------------------------
-          git tag --list
-          echo -------------------------------------
-          git tag --list 'v[0-9.]*'
-          echo -------------------------------------
-          git tag --list 'v[0-9.]*' --points-at
-          echo -------------------------------------
           tags=($(git tag --list 'v[0-9.]*' --points-at))
-          echo $tags
-          echo -------------------------------------
-          printf '%s\n' ${tags[@]} | awk '{ print length($0) " " $0; }' | sort -n -r | cut -d ' ' -f 2-
-          echo -------------------------------------
+          echo tags: ${tags[@]}
           tags_desc=($(printf '%s\n' ${tags[@]} | awk '{ print length($0) " " $0; }' | sort -n -r | cut -d ' ' -f 2-))
-          echo $tags_desc
-          echo -------------------------------------
-          echo ${tags_desc[0]}
-          echo -------------------------------------
+          echo tags_desc: ${tags_desc[@]}
           app_version=${tags_desc[0]}  
           echo "app_version=$app_version" >> $GITHUB_ENV
           echo app_version: $app_version

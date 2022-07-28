@@ -20,8 +20,3 @@ envs:
       ecr-repository: demo-app-2022-api
       ecr-tag: dev
       force-push: true
-      
-    - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
-      ecr-repository: demo-app-2022-api
-      ecr-tag: problem-maker
-      unique-id: true

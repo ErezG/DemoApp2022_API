@@ -25,6 +25,7 @@ jobs:
       - name: Get app version
         run: |
           git --version
+          git fetch --tags
           echo -------------------------------------
           git tag --list
           echo -------------------------------------

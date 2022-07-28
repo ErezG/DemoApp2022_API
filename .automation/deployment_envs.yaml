@@ -4,12 +4,8 @@ envs:
     - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
       ecr-repository: demo-app-2022-api
       ecr-tag: $$$app-version
-      continue-on-error: true
-      
-    - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
-      ecr-repository: demo-app-2022-api
-      ecr-tag: $$fake-version
       semantic-versioning: true
+      continue-on-error: true
       
     - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
       ecr-repository: demo-app-2022-api

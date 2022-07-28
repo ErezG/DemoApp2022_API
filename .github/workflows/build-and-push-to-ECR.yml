@@ -52,7 +52,7 @@ jobs:
           env-key: client-api-dev
           local-image: ${{ env.LOCAL_IMAGE_NAME }}
           app-version: ${{ env.app_version }}
-          extra-tags: 'commit-hash=${{ github.sha }},fake-version=1.2.${{ github.run_number }}'
+          extra-tags: 'commit-hash=${{ github.sha }}'
       
       #- name: deploy
-      #  run: echo deploy....
+      #  run: echo deploy...

@@ -25,7 +25,7 @@ jobs:
       - name: Get app version
         run: |
           git --version
-          git fetch $GITHUB_REF --depth=1
+          git fetch $GITHUB_REPOSITORY/$GITHUB_REF --depth=1
           echo -------------------------------------
           git tag --list
           echo -------------------------------------

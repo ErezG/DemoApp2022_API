@@ -1,0 +1,27 @@
+envs:
+  client-api-dev:
+    publish-to:
+    - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
+      ecr-repository: demo-app-2022-api
+      ecr-tag: $$$app-version
+      continue-on-error: true
+      
+    - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
+      ecr-repository: demo-app-2022-api
+      ecr-tag: $$fake-version
+      semantic-versioning: true
+      
+    - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
+      ecr-repository: demo-app-2022-api
+      ecr-tag: $$commit-hash
+      unique-id: true
+      
+    - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
+      ecr-repository: demo-app-2022-api
+      ecr-tag: dev
+      force-push: true
+      
+    - ecr-registry: 291042543057.dkr.ecr.us-east-1.amazonaws.com
+      ecr-repository: demo-app-2022-api
+      ecr-tag: problem-maker
+      unique-id: true

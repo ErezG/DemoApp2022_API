@@ -24,6 +24,10 @@ jobs:
           
       - name: Get app version
         run: |
+          git --version
+          echo -------------------------------------
+          gi --version
+          echo -------------------------------------
           git tag --list 'v[0-9.]*' --points-at
           echo -------------------------------------
           tags=($(git tag --list 'v[0-9.]*' --points-at))
